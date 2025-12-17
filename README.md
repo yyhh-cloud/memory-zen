@@ -18,7 +18,6 @@ It features **zero image assets** (everything is rendered by code) and an **adap
 
 ### 🎮 Play Now
 👉 **[Click Here to Start the Game](https://yyhh-cloud.github.io/memory-zen/)**
-*(Recommended on Mobile for the best experience)*
 
 ### ✨ Key Features
 * **🎨 Pure CSS Landscapes**: No external images! All 5 immersive themes (Morning, Ocean, Aurora, Dusk, Forest) are rendered via CSS gradients.
@@ -49,7 +48,6 @@ No dependencies. No build tools.
 
 ### 🎮 在线试玩
 👉 **[点击这里开始游戏](https://yyhh-cloud.github.io/memory-zen/)**
-*(推荐使用手机访问，体验最佳)*
 
 ### ✨ 核心亮点
 * **🎨 纯 CSS 画廊**：告别图片加载失败！晨曦、深海、极光等 5 套主题全由 CSS 渐变与动画实时渲染。
