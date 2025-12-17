@@ -72,7 +72,7 @@ No dependencies. No build tools.
 
 ## 📸 Screenshots / 截图预览
 
-| Desktop (Zen Mode) | Mobile (Pink Theme) |
+| Desktop | Mobile |
 |:---:|:---:|
 | <img src="screenshots/desktop.jpg" width="400" alt="Desktop Demo"> | <img src="screenshots/mobile.jpg" width="200" alt="Mobile Demo"> |
 
