@@ -1,78 +1,88 @@
-# 🌿 Memory Zen (记忆翻牌·禅意版)
-A pure CSS landscape memory game.
-![Project Status](https://img.shields.io/badge/Status-Completed-success) ![License](https://img.shields.io/badge/License-MIT-blue) ![Tech](https://img.shields.io/badge/Tech-HTML%20%7C%20CSS%20%7C%20JS-yellow)
+# 🌿 Memory Zen
+
+![Status](https://img.shields.io/badge/Status-Completed-success) ![License](https://img.shields.io/badge/License-MIT-blue) ![Language](https://img.shields.io/badge/Language-English%20%7C%20中文-orange)
 
 > **"Code is poetry, and memory is a landscape."**
-> 
-> A lightweight, meditative memory card game built with pure HTML, CSS, and JavaScript. Zero image assets required.
-> 一个轻量级、无需图片资源的纯代码绘制记忆翻牌游戏。
+
+**[English](#-english) | [中文说明](#-中文说明)**
 
 ---
 
-## 🎮 Play Now (在线试玩)
+<div id="-english"></div>
 
-👉 **[点击这里体验游戏 / Click Here to Play]([https://yyhh-cloud.github.io/memory-zen/])**
+## 🇬🇧 English
 
----
+### Introduction
+**Memory Zen** is a lightweight, meditative memory card game built with pure HTML, CSS, and JavaScript. 
+It features **zero image assets** (everything is rendered by code) and an **adaptive responsive design** that works perfectly on any device.
 
-## ✨ Features (项目亮点)
+### 🎮 Play Now
+👉 **[Click Here to Start the Game](https://yyhh-cloud.github.io/memory-zen/)**
+*(Recommended on Mobile for the best experience)*
 
-### 🎨 Pure CSS Landscapes (纯代码画廊)
-No external image requests! All 5 immersive background themes (Morning, Ocean, Aurora, Dusk, Forest) are rendered in real-time using **CSS Gradients**.
-* **0 素材依赖**：告别图片加载失败，断网也能玩。
-* **极光动画**：丝滑的 CSS 背景流光效果。
+### ✨ Key Features
+* **🎨 Pure CSS Landscapes**: No external images! All 5 immersive themes (Morning, Ocean, Aurora, Dusk, Forest) are rendered via CSS gradients.
+* **📱 Adaptive Layout**: Powered by a smart algorithm using `clamp()` and Grid. It perfectly fits screens from 4K desktops to small phones.
+* **🌐 Bilingual UI**: Built-in i18n support. Switch between English and Chinese with one click.
+* **🧘 Zen Design**: Glassmorphism UI + Morandi colors for a relaxing experience.
 
-### 📱 Perfect Responsive Design (极致响应式)
-Powered by a smart layout algorithm. The grid automatically adjusts gaps and sizes based on your device.
-* **全屏自适应**：从电脑大屏到手机小屏，自动计算最佳间距。
-* **智能缩放**：6x6 极限模式下，卡片与字体自动缩小，绝不溢出屏幕。
+### 🛠️ Tech Stack
+* **Core**: HTML5, CSS3, Vanilla JS (ES6+)
+* **Layout**: CSS Grid, Flexbox
+* **Effects**: CSS 3D Transforms, Animations
+* **Storage**: LocalStorage API
 
-### 🌐 Bilingual Support (中英双语)
-* **一键切换**：内置国际化 (i18n) 模块，支持中文/English 界面实时切换。
-
-### 🧘 Zen UI (禅意设计)
-* **Glassmorphism**：高级毛玻璃质感界面。
-* **Morandi Colors**：精心调配的莫兰迪色系渐变卡片，护眼又解压。
-
----
-
-## 🛠️ Tech Stack (技术栈)
-
-* **Core**: HTML5, CSS3, Vanilla JavaScript (ES6+)
-* **Layout**: CSS Grid (with `clamp()` for responsiveness), Flexbox
-* **Effects**: CSS Transforms (3D Flip), Backdrop Filter (Blur), Keyframe Animations
-* **Storage**: LocalStorage API (For saving best scores)
+### 🚀 How to Run
+No dependencies. No build tools.
+1.  Clone the repo: `git clone https://github.com/yyhh-cloud/memory-zen.git`
+2.  Open `index.html` in your browser.
 
 ---
 
-## 📸 Screenshots (游戏截图)
+<div id="-中文说明"></div>
 
-| Desktop View (电脑端) | Mobile View (手机端) |
+## 🇨🇳 中文说明
+
+### 项目简介
+**Memory Zen (禅意翻牌)** 是一款轻量级、主打沉浸体验的网页小游戏。
+该项目完全使用原生 HTML/CSS/JS 编写，**不依赖任何图片资源**（全代码绘制），并拥有**极致的响应式设计**，无论是电脑还是手机都能获得完美的视觉体验。
+
+### 🎮 在线试玩
+👉 **[点击这里开始游戏](https://yyhh-cloud.github.io/memory-zen/)**
+*(推荐使用手机访问，体验最佳)*
+
+### ✨ 核心亮点
+* **🎨 纯 CSS 画廊**：告别图片加载失败！晨曦、深海、极光等 5 套主题全由 CSS 渐变与动画实时渲染。
+* **📱 全屏自适应**：独创的布局算法。在 6x6 极限模式下，卡片间距、大小、字体会自动缩放，绝不溢出屏幕。
+* **🌐 中英双语**：内置国际化支持，游戏内可一键切换中英文界面。
+* **🧘 禅意美学**：采用莫兰迪配色与高级毛玻璃（Glassmorphism）特效，护眼又解压。
+
+### 🛠️ 技术栈
+* **核心**：原生 HTML5, CSS3, JavaScript (ES6+)
+* **布局**：CSS Grid (网格), Flexbox (弹性盒)
+* **特效**：CSS 3D 翻转, 关键帧动画, 背景滤镜
+* **存储**：LocalStorage (本地记录最佳成绩)
+
+### 🚀 本地运行
+本项目无任何依赖，无需 Node.js 环境。
+1.  克隆仓库：`git clone https://github.com/yyhh-cloud/memory-zen.git`
+2.  双击 `index.html` 即可运行。
+
+---
+
+## 📸 Screenshots / 截图预览
+
+| Desktop (Zen Mode) | Mobile (Pink Theme) |
 |:---:|:---:|
 | <img src="screenshots/desktop.jpg" width="400" alt="Desktop Demo"> | <img src="screenshots/mobile.jpg" width="200" alt="Mobile Demo"> |
 
-*(Note: Screenshots are for demonstration. The actual background is rendered by code!)*
-
 ---
 
-## 🚀 How to Run Locally (本地运行)
+## 📄 License
 
-Since this project uses no build tools or dependencies, it's super simple:
+MIT License.
 
-1.  Clone the repo:
-    ```bash
-    git clone [https://yyhh-cloud.github.io/memory-zen/](https://yyhh-cloud.github.io/memory-zen/)
-    ```
-2.  Open `index.html` in your browser.
-3.  Enjoy!
-
----
-
-## 👩‍💻 Author
-
-Created with ❤️ by **Yuan Yue**.
-
-Let's connect! 
----
-
-*Enjoy the Zen moment.* 🌿
+<p align="center">
+  Created with ❤️ by <strong> yy </strong><br>
+  <em>Enjoy the Zen moment. 🌿</em>
+</p>
