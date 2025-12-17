@@ -21,7 +21,6 @@
             font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
             color: white;
             transition: background 1s ease;
-            /* 防止IOS点击闪烁 */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -39,7 +38,7 @@
         }
 
         .score-board {
-            font-size: 18px; margin-bottom: 15px; /* 稍微缩减间距 */
+            font-size: 18px; margin-bottom: 15px;
             letter-spacing: 1px; font-weight: 300;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2); z-index: 10;
         }
@@ -54,48 +53,35 @@
             background: rgba(255, 255, 255, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.4);
             color: white; padding: 8px 12px;
-            border-radius: 20px; font-size: 13px; /* 字体改小一点点适应手机 */
+            border-radius: 20px; font-size: 13px;
             cursor: pointer; backdrop-filter: blur(5px);
             outline: none; transition: all 0.2s;
         }
         button:hover, select:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.4); }
 
-        /* --- 📱 核心修复区域：棋盘容器 --- */
         .game-board {
             display: grid;
-            /* 智能间距：手机上4px，电脑上12px -> 完美解决手机挤爆问题 */
             gap: clamp(4px, 1.5vw, 12px); 
             padding: clamp(10px, 2vw, 20px);
-            
-            /* 限制最大宽度：让5x4在电脑上也不会太高 */
-            width: 92vw;          /* 留出左右边距 */
-            max-width: 460px;     /* 收紧最大宽度 */
-            
-            /* 居中机制 */
+            width: 92vw; max-width: 460px;
             margin: 0 auto;
-            
             background: rgba(255, 255, 255, 0.15);
             border-radius: 16px;
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             z-index: 10;
-            box-sizing: border-box; /* 确保padding不算在宽度里 */
+            box-sizing: border-box;
         }
 
-        /* --- 🃏 卡片样式 --- */
         .card {
             background-color: transparent;
-            border-radius: 8px; /* 圆角改小，适应密集网格 */
+            border-radius: 8px;
             cursor: pointer;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.4s;
-            
-            /* 强制正方形 */
-            width: 100%;
-            aspect-ratio: 1/1; 
-            /* 移除所有导致撑大的最小宽度限制 */
+            width: 100%; aspect-ratio: 1/1; 
             min-width: 0; 
         }
 
@@ -107,28 +93,75 @@
             position: absolute;
             border-radius: 8px;
             display: flex; justify-content: center; align-items: center;
-            
-            /* --- 🔠 字体智能缩放 --- */
-            /* 手机上(6x6)字体会自动变小，不会撑破格子 */
             font-size: clamp(18px, 6vw, 32px);
-            
             backface-visibility: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-            /* 禁止用户选中emoji，防止手机上出现蓝色选框 */
             user-select: none; 
         }
 
+        /* --- 🎨 核心改动：卡片背面 (Back) --- */
         .back { 
-            background: rgba(44, 62, 80, 0.7); 
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.3);
+            /* 1. 改为半透明白色 (White Glass) */
+            background: rgba(255, 255, 255, 0.35); 
+            
+            /* 2. 边框稍微亮一点，增加精致感 */
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            
+            /* 3. 毛玻璃效果保留，让它透出一点背景色 */
             backdrop-filter: blur(5px);
+            
+            /* 4. 如果以后想加问号图标，设为白色 */
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .front { transform: rotateY(180deg); color: #444; font-weight: bold; }
         .front.color-type-1 { background: var(--gradient-1); }
         .front.color-type-2 { background: var(--gradient-2); }
         .front.color-type-3 { background: var(--gradient-3); }
+
+        /* 弹窗样式 */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            color: #333;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-title { font-size: 26px; font-weight: bold; margin-bottom: 10px; color: #2d3436; }
+        .modal-text { font-size: 18px; margin-bottom: 25px; color: #636e72; }
+        
+        .modal-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            border: none; padding: 12px 35px;
+            border-radius: 50px; font-size: 16px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .modal-btn:hover { 
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.4);
+        }
 
     </style>
 </head>
@@ -148,13 +181,22 @@
 
     <div class="game-board" id="board"></div>
 
+    <div class="modal-overlay" id="win-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modal-title">🎉 恭喜通关!</div>
+            <div class="modal-text" id="modal-msg">总共步数: 0</div>
+            <button class="modal-btn" onclick="closeModalAndRestart()" id="modal-btn">再来一局</button>
+        </div>
+    </div>
+
     <script>
         const themes = ['theme-morning', 'theme-ocean', 'theme-aurora', 'theme-dusk', 'theme-forest'];
 
         const translations = {
             zh: {
                 steps: "步数", best: "最佳", restart: "🔄 重新开始",
-                winTitle: "恭喜通关！", winMsg: "总共步数：",
+                winTitle: "🎉 恭喜通关!", winMsg: "总共步数：",
+                playAgain: "再来一局",
                 options: [
                     { val: "4x3", text: "简单 (4x3)" },
                     { val: "4x4", text: "标准 (4x4)" },
@@ -164,7 +206,8 @@
             },
             en: {
                 steps: "Steps", best: "Best", restart: "🔄 Restart",
-                winTitle: "You Won!", winMsg: "Total moves: ",
+                winTitle: "🎉 You Won!", winMsg: "Total moves: ",
+                playAgain: "Play Again",
                 options: [
                     { val: "4x3", text: "Easy (4x3)" },
                     { val: "4x4", text: "Medium (4x4)" },
@@ -194,6 +237,11 @@
         const movesDisplay = document.getElementById('current-moves');
         const bestScoreDisplay = document.getElementById('best-score');
         
+        const winModal = document.getElementById('win-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMsg = document.getElementById('modal-msg');
+        const modalBtn = document.getElementById('modal-btn');
+        
         difficultySelect.addEventListener('change', initGame);
 
         function toggleLanguage() {
@@ -206,6 +254,7 @@
             document.getElementById('txt-steps').innerText = t.steps;
             document.getElementById('txt-best').innerText = t.best;
             document.getElementById('btn-restart').innerText = t.restart;
+            modalBtn.innerText = t.playAgain;
             const currentVal = difficultySelect.value || "4x4"; 
             difficultySelect.innerHTML = "";
             t.options.forEach(opt => {
@@ -218,40 +267,27 @@
         }
 
         function initGame() {
+            winModal.classList.remove('active');
             document.body.classList.remove(...themes);
             const randomTheme = themes[Math.floor(Math.random() * themes.length)];
             document.body.classList.add(randomTheme);
 
-            moves = 0;
-            matchesFound = 0;
-            hasFlippedCard = false;
-            lockBoard = false;
-            firstCard = null;
-            secondCard = null;
-            movesDisplay.innerText = moves;
-            board.innerHTML = ''; 
+            moves = 0; matchesFound = 0; hasFlippedCard = false; lockBoard = false;
+            firstCard = null; secondCard = null;
+            movesDisplay.innerText = moves; board.innerHTML = ''; 
 
             const mode = difficultySelect.value; 
             const [rows, cols] = mode.split('x').map(Number);
             totalPairs = (rows * cols) / 2;
-            
             loadBestScore(mode);
-
-            // --- 🔧 修复核心：网格布局 ---
-            // 使用 1fr 平分空间，确保不溢出
             board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
             allEmojis.sort(() => 0.5 - Math.random());
             let selectedEmojis = allEmojis.slice(0, totalPairs);
-
             let preparedCards = selectedEmojis.map(emoji => {
                 const randomColorNum = Math.floor(Math.random() * 3) + 1;
-                return {
-                    icon: emoji,
-                    colorClass: `color-type-${randomColorNum}`
-                };
+                return { icon: emoji, colorClass: `color-type-${randomColorNum}` };
             });
-
             let gameDeck = [...preparedCards, ...preparedCards];
             gameDeck.sort(() => 0.5 - Math.random());
 
@@ -259,11 +295,7 @@
                 const card = document.createElement('div');
                 card.classList.add('card');
                 card.dataset.icon = cardData.icon; 
-                
-                card.innerHTML = `
-                    <div class="front ${cardData.colorClass}">${cardData.icon}</div>
-                    <div class="back"></div>
-                `;
+                card.innerHTML = `<div class="front ${cardData.colorClass}">${cardData.icon}</div><div class="back"></div>`;
                 card.addEventListener('click', flipCard);
                 board.appendChild(card);
             });
@@ -273,15 +305,11 @@
             if (lockBoard) return;
             if (this === firstCard) return;
             this.classList.add('flip');
-            if (!hasFlippedCard) {
-                hasFlippedCard = true; firstCard = this; return;
-            }
+            if (!hasFlippedCard) { hasFlippedCard = true; firstCard = this; return; }
             secondCard = this; updateMoves(); checkForMatch();
         }
 
-        function updateMoves() {
-            moves++; movesDisplay.innerText = moves;
-        }
+        function updateMoves() { moves++; movesDisplay.innerText = moves; }
 
         function checkForMatch() {
             let isMatch = firstCard.dataset.icon === secondCard.dataset.icon;
@@ -313,18 +341,25 @@
         function handleWin() {
             setTimeout(() => {
                 const mode = difficultySelect.value;
-                const currentBest = localStorage.getItem(`memory_zen_v62_best_${mode}`);
+                const currentBest = localStorage.getItem(`memory_zen_v67_best_${mode}`);
                 const t = translations[currentLang];
-                alert(`${t.winTitle}\n${t.winMsg}${moves}`);
                 if (!currentBest || moves < parseInt(currentBest)) {
-                    localStorage.setItem(`memory_zen_v62_best_${mode}`, moves);
+                    localStorage.setItem(`memory_zen_v67_best_${mode}`, moves);
                     bestScoreDisplay.innerText = moves;
                 }
+                modalTitle.innerText = t.winTitle;
+                modalMsg.innerText = `${t.winMsg}${moves}`;
+                winModal.classList.add('active');
             }, 600);
         }
 
+        function closeModalAndRestart() {
+            winModal.classList.remove('active');
+            setTimeout(initGame, 300);
+        }
+
         function loadBestScore(mode) {
-            const best = localStorage.getItem(`memory_zen_v62_best_${mode}`);
+            const best = localStorage.getItem(`memory_zen_v67_best_${mode}`);
             bestScoreDisplay.innerText = best ? best : '--';
         }
 
