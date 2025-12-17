@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Memory Zen Final</title>
+    <style>
+        :root {
+            --gradient-1: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            --gradient-2: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --gradient-3: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
+            color: white;
+            transition: background 1s ease;
+            /* 防止IOS点击闪烁 */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 主题配色 */
+        body.theme-morning { background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); }
+        body.theme-ocean { background: linear-gradient(to top, #30cfd0 0%, #330867 100%); }
+        body.theme-aurora { background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); }
+        body.theme-dusk { background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%); }
+        body.theme-forest { background: linear-gradient(to top, #0ba360 0%, #3cba92 100%); }
+
+        body::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAA5OTkAAAAAAAAAAABMTExERERmZmZnMy3EAAAACHRSTlMAM8zMzMzMzMwI4V7fAAAASUlEQVQ4y2NgwA04mYC8MysFwYwMIE4G4q5ZKQh3zUpBuGsw7prlgnDXLBeEu2a5INw1ywXhrlkuCHfNcgG5i5kYyF3MxFy4CwA61woE+Q2H1gAAAABJRU5ErkJggg==');
+            opacity: 0.05; pointer-events: none; z-index: -1;
+        }
+
+        .score-board {
+            font-size: 18px; margin-bottom: 15px; /* 稍微缩减间距 */
+            letter-spacing: 1px; font-weight: 300;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2); z-index: 10;
+        }
+        .highlight { font-weight: 600; font-size: 1.3em; margin: 0 6px; }
+
+        .controls {
+            display: flex; gap: 8px; margin-bottom: 20px; z-index: 10;
+            flex-wrap: wrap; justify-content: center;
+        }
+
+        select, button {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white; padding: 8px 12px;
+            border-radius: 20px; font-size: 13px; /* 字体改小一点点适应手机 */
+            cursor: pointer; backdrop-filter: blur(5px);
+            outline: none; transition: all 0.2s;
+        }
+        button:hover, select:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.4); }
+
+        /* --- 📱 核心修复区域：棋盘容器 --- */
+        .game-board {
+            display: grid;
+            /* 智能间距：手机上4px，电脑上12px -> 完美解决手机挤爆问题 */
+            gap: clamp(4px, 1.5vw, 12px); 
+            padding: clamp(10px, 2vw, 20px);
+            
+            /* 限制最大宽度：让5x4在电脑上也不会太高 */
+            width: 92vw;          /* 留出左右边距 */
+            max-width: 460px;     /* 收紧最大宽度 */
+            
+            /* 居中机制 */
+            margin: 0 auto;
+            
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            z-index: 10;
+            box-sizing: border-box; /* 确保padding不算在宽度里 */
+        }
+
+        /* --- 🃏 卡片样式 --- */
+        .card {
+            background-color: transparent;
+            border-radius: 8px; /* 圆角改小，适应密集网格 */
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.4s;
+            
+            /* 强制正方形 */
+            width: 100%;
+            aspect-ratio: 1/1; 
+            /* 移除所有导致撑大的最小宽度限制 */
+            min-width: 0; 
+        }
+
+        .card.flip { transform: rotateY(180deg); }
+        .card.hidden { opacity: 0; pointer-events: none; transform: scale(0.8); transition: opacity 0.5s, transform 0.5s; }
+
+        .front, .back {
+            width: 100%; height: 100%;
+            position: absolute;
+            border-radius: 8px;
+            display: flex; justify-content: center; align-items: center;
+            
+            /* --- 🔠 字体智能缩放 --- */
+            /* 手机上(6x6)字体会自动变小，不会撑破格子 */
+            font-size: clamp(18px, 6vw, 32px);
+            
+            backface-visibility: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            /* 禁止用户选中emoji，防止手机上出现蓝色选框 */
+            user-select: none; 
+        }
+
+        .back { 
+            background: rgba(44, 62, 80, 0.7); 
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .front { transform: rotateY(180deg); color: #444; font-weight: bold; }
+        .front.color-type-1 { background: var(--gradient-1); }
+        .front.color-type-2 { background: var(--gradient-2); }
+        .front.color-type-3 { background: var(--gradient-3); }
+
+    </style>
+</head>
+<body class="theme-morning">
+
+    <div class="score-board">
+        <span id="txt-steps">步数</span> <span id="current-moves" class="highlight">0</span> 
+        <span style="opacity: 0.5; margin: 0 10px;">|</span>
+        <span id="txt-best">最佳</span> <span id="best-score" class="highlight">--</span>
+    </div>
+
+    <div class="controls">
+        <select id="difficulty"></select>
+        <button onclick="initGame()" id="btn-restart">🔄 重新开始</button>
+        <button onclick="toggleLanguage()" class="lang-btn">🌐 中/En</button>
+    </div>
+
+    <div class="game-board" id="board"></div>
+
+    <script>
+        const themes = ['theme-morning', 'theme-ocean', 'theme-aurora', 'theme-dusk', 'theme-forest'];
+
+        const translations = {
+            zh: {
+                steps: "步数", best: "最佳", restart: "🔄 重新开始",
+                winTitle: "恭喜通关！", winMsg: "总共步数：",
+                options: [
+                    { val: "4x3", text: "简单 (4x3)" },
+                    { val: "4x4", text: "标准 (4x4)" },
+                    { val: "5x4", text: "进阶 (5x4)" },
+                    { val: "6x6", text: "极限 (6x6)" }
+                ]
+            },
+            en: {
+                steps: "Steps", best: "Best", restart: "🔄 Restart",
+                winTitle: "You Won!", winMsg: "Total moves: ",
+                options: [
+                    { val: "4x3", text: "Easy (4x3)" },
+                    { val: "4x4", text: "Medium (4x4)" },
+                    { val: "5x4", text: "Hard (5x4)" },
+                    { val: "6x6", text: "Zen (6x6)" }
+                ]
+            }
+        };
+
+        let currentLang = 'zh'; 
+        const allEmojis = [
+            '🌿', '🍂', '🍄', '🌵', '🌴', '🌸', '🌻', '🍁',
+            '🏔️', '🌊', '🌙', '⭐', '☁️', '❄️', '🔥', '💧',
+            '📷', '⌚', '🎧', '☕', '🎻', '🎹', '🎨', '🚲',
+            '🦊', '🦌', '🐋', '🕊️', '🦢', '🦋', '🐞', '🐝'
+        ];
+
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+        let moves = 0;
+        let matchesFound = 0;
+        let totalPairs = 0;
+        
+        const board = document.getElementById('board');
+        const difficultySelect = document.getElementById('difficulty');
+        const movesDisplay = document.getElementById('current-moves');
+        const bestScoreDisplay = document.getElementById('best-score');
+        
+        difficultySelect.addEventListener('change', initGame);
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            updateUIText();
+        }
+
+        function updateUIText() {
+            const t = translations[currentLang];
+            document.getElementById('txt-steps').innerText = t.steps;
+            document.getElementById('txt-best').innerText = t.best;
+            document.getElementById('btn-restart').innerText = t.restart;
+            const currentVal = difficultySelect.value || "4x4"; 
+            difficultySelect.innerHTML = "";
+            t.options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.val;
+                option.innerText = opt.text;
+                if (opt.val === currentVal) option.selected = true;
+                difficultySelect.appendChild(option);
+            });
+        }
+
+        function initGame() {
+            document.body.classList.remove(...themes);
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            document.body.classList.add(randomTheme);
+
+            moves = 0;
+            matchesFound = 0;
+            hasFlippedCard = false;
+            lockBoard = false;
+            firstCard = null;
+            secondCard = null;
+            movesDisplay.innerText = moves;
+            board.innerHTML = ''; 
+
+            const mode = difficultySelect.value; 
+            const [rows, cols] = mode.split('x').map(Number);
+            totalPairs = (rows * cols) / 2;
+            
+            loadBestScore(mode);
+
+            // --- 🔧 修复核心：网格布局 ---
+            // 使用 1fr 平分空间，确保不溢出
+            board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+            allEmojis.sort(() => 0.5 - Math.random());
+            let selectedEmojis = allEmojis.slice(0, totalPairs);
+
+            let preparedCards = selectedEmojis.map(emoji => {
+                const randomColorNum = Math.floor(Math.random() * 3) + 1;
+                return {
+                    icon: emoji,
+                    colorClass: `color-type-${randomColorNum}`
+                };
+            });
+
+            let gameDeck = [...preparedCards, ...preparedCards];
+            gameDeck.sort(() => 0.5 - Math.random());
+
+            gameDeck.forEach(cardData => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.icon = cardData.icon; 
+                
+                card.innerHTML = `
+                    <div class="front ${cardData.colorClass}">${cardData.icon}</div>
+                    <div class="back"></div>
+                `;
+                card.addEventListener('click', flipCard);
+                board.appendChild(card);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+            this.classList.add('flip');
+            if (!hasFlippedCard) {
+                hasFlippedCard = true; firstCard = this; return;
+            }
+            secondCard = this; updateMoves(); checkForMatch();
+        }
+
+        function updateMoves() {
+            moves++; movesDisplay.innerText = moves;
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.icon === secondCard.dataset.icon;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            lockBoard = true; matchesFound++;
+            setTimeout(() => {
+                firstCard.classList.add('hidden'); secondCard.classList.add('hidden');
+                resetBoard();
+                if (matchesFound === totalPairs) handleWin();
+            }, 700);
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            setTimeout(() => {
+                firstCard.classList.remove('flip'); secondCard.classList.remove('flip');
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        function handleWin() {
+            setTimeout(() => {
+                const mode = difficultySelect.value;
+                const currentBest = localStorage.getItem(`memory_zen_v62_best_${mode}`);
+                const t = translations[currentLang];
+                alert(`${t.winTitle}\n${t.winMsg}${moves}`);
+                if (!currentBest || moves < parseInt(currentBest)) {
+                    localStorage.setItem(`memory_zen_v62_best_${mode}`, moves);
+                    bestScoreDisplay.innerText = moves;
+                }
+            }, 600);
+        }
+
+        function loadBestScore(mode) {
+            const best = localStorage.getItem(`memory_zen_v62_best_${mode}`);
+            bestScoreDisplay.innerText = best ? best : '--';
+        }
+
+        updateUIText();
+        initGame();
+    </script>
+</body>
+</html>
