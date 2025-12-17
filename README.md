@@ -83,6 +83,6 @@ No dependencies. No build tools.
 MIT License.
 
 <p align="center">
-  Created with ❤️ by <strong> yy </strong><br>
+  Created with by <strong> yy </strong><br>
   <em>Enjoy the Zen moment. 🌿</em>
 </p>
