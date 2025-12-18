@@ -23,7 +23,7 @@
         }
         .bg-layer.active { opacity: 1; }
 
-        /* A. 🍬 糖果 (Candy) - 3秒快速流动 */
+        /* A. 🍬 糖果 (Candy) */
         .theme-candy {
             background: linear-gradient(45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
             background-size: 300% 300%;
@@ -51,12 +51,11 @@
         @keyframes galaxyRotate { from {transform: translate(-50%, -50%) rotate(0deg);} to {transform: translate(-50%, -50%) rotate(360deg);} }
         @keyframes starFloat { from {transform: scale(1.1) rotate(0deg);} to {transform: scale(1) rotate(-10deg);} }
 
-        /* C. 🔮 幻境 (Mirage) - 极速增强版 */
+        /* C. 🔮 幻境 (Mirage) */
         .theme-mirage { background: #fdfbfb; }
         .holo-blob {
             position: absolute; width: 100vw; height: 100vw;
             border-radius: 50%; 
-            /* 加大不透明度，颜色更实 */
             filter: blur(50px); opacity: 0.9;
             will-change: transform;
         }
@@ -64,14 +63,12 @@
             /* 深紫 */
             background: radial-gradient(circle, #c471ed 0%, transparent 70%);
             top: -20%; left: -20%;
-            /* 速度从 6s 提升到 3s，幅度加大 */
             animation: holoMove1 3s ease-in-out infinite alternate;
         }
         .holo-blob:nth-child(2) {
             /* 深蓝 */
             background: radial-gradient(circle, #12c2e9 0%, transparent 70%);
             bottom: -20%; right: -20%;
-            /* 速度从 8s 提升到 4s */
             animation: holoMove2 4s ease-in-out infinite alternate;
         }
         @keyframes holoMove1 { from {transform: translate(0,0) scale(1);} to {transform: translate(100px, 100px) scale(1.2);} }
@@ -129,7 +126,6 @@
             margin-bottom: 20px; z-index: 10; flex-shrink: 0; width: 100%;
         }
 
-        /* 🟢 按钮样式：回归 v7.3 (无任何花哨 Hack) */
         .unified-btn {
             background: rgba(255, 255, 255, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -144,12 +140,9 @@
         .unified-btn:hover { background: rgba(255, 255, 255, 0.9); color: #333; transform: scale(1.05); text-shadow: none; }
         .unified-btn:active { transform: scale(0.95); }
 
-        /* 🔴 Select 终极回归：完全不处理外观 */
         select.unified-btn {
-            /* 移除所有自定义背景和 appearance 属性，只保留基本尺寸 */
             padding-left: 15px;
             padding-right: 15px;
-            /* 浏览器会自动添加它自己的箭头，这就是 v7.3 的样子 */
         }
         /* 避免深色模式下文字看不清 */
         option { color: #333; } 
